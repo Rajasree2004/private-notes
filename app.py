@@ -1,57 +1,15 @@
+
 from fastapi import FastAPI, HTTPException, Form, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from cryptography.fernet import Fernet, InvalidToken
-from sqlalchemy import create_engine, Column, String
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-import random
-import string
-
-app = FastAPI()
-
-# Initialize the database URL (SQLite in-memory database for simplicity)
-DATABASE_URL = "sqlite:///./notes.db"
-
-# Setup database engine and session
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# Define the note model
-Base = declarative_base()
-
-# Encryption setup (this should be securely stored in production)
-KEY = Fernet.generate_key()
-cipher = Fernet(KEY)
-
-# Database Model for Notes
-class Note(Base):
-    __tablename__ = 'notes'
-    code = Column(String, primary_key=True, index=True)
-    content = Column(String)
-
-# Initialize the database
-def init_db():
-    Base.metadata.create_all(bind=engine)
-
-# Utility functions
-def generate_code(length=8):
-    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
-
-def encrypt_content(content):
-    return cipher.encrypt(content.encode()).decode()
-
-def decrypt_content(encrypted_content):
-    try:
-        return cipher.decrypt(encrypted_content.encode()).decode()
-    except InvalidToken:
-        return None
+from init import SessionLocal, generate_code, encrypt_content, decrypt_content
+from model import Note
 
 # Template setup
 templates = Jinja2Templates(directory="templates")
 
-# Create the database tables
-init_db()
+# Initialize FastAPI app
+app = FastAPI()
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
