@@ -16,8 +16,8 @@ ENTRYPOINT ["sh", "-c", "./entrypoint.sh"]
 
 # Expose the port that FastAPI will run on
 EXPOSE 8000
-
 # Command to run the FastAPI app using Uvicorn
 
 CMD ["/bin/bash", "entrypoint.sh"]
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
