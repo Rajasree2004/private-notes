@@ -6,13 +6,13 @@ WORKDIR /app
 
 # Copy the current directory contents into the container at /app
 COPY . /app
+RUN chmod +x /entrypoint.sh
 
 # Install dependencies
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+COPY entrypoint.sh ./entrypoint.sh
+ENTRYPOINT ["sh", "-c", "./entrypoint.sh"]
 
 # Expose the port that FastAPI will run on
 EXPOSE 8000
