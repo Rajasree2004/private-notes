@@ -1,21 +1,21 @@
-# init.py
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from cryptography.fernet import Fernet
 
-# Initialize the database URL (SQLite in-memory database for simplicity)
-DATABASE_URL = "sqlite:///./notes.db"
+# Fetch the database URL from environment variables (defaults to SQLite for local development)
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./notes.db")
 
 # Setup database engine and session
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Define the base for models
 Base = declarative_base()
 
-# Encryption setup (this should be securely stored in production)
-from cryptography.fernet import Fernet
-KEY = Fernet.generate_key()
+# Fetch the encryption key from environment variables
+KEY = os.getenv("ENCRYPTION_KEY", Fernet.generate_key().decode())  # Default to a generated key if not set
 cipher = Fernet(KEY)
 
 # Utility functions
