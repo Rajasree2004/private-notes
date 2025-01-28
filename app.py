@@ -3,7 +3,7 @@ from fastapi import FastAPI, HTTPException, Form, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from init import SessionLocal, generate_code, encrypt_content, decrypt_content
-from model import Note
+from models import Note
 
 # Template setup
 templates = Jinja2Templates(directory="templates")
