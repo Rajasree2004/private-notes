@@ -4,4 +4,4 @@ cryptography
 sqlalchemy
 jinja2
 python-multipart
-pymysql
+pymysql #for mysql connection
