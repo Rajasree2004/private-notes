@@ -6,6 +6,7 @@ set -e
 # Update and install necessary packages
 echo "Updating packages..."
 apt-get update && apt-get install -y \
+    python3.12-venv \
     openssh-server \
     curl \
     net-tools \
@@ -39,4 +40,4 @@ python seed_data.py
 
 # Start the FastAPI application
 echo "Starting FastAPI application..."
-uvicorn app:app --host 0.0.0.0 --port 8000
+uvicorn app:app --host 127.0.0.1 --port 8000
