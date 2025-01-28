@@ -4,19 +4,21 @@ FROM python:3.12-slim
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
+# Copy the current directory contents into the container
 COPY . /app
+
+# Ensure the entrypoint script is executable
 RUN chmod +x /entrypoint.sh
+
 # Install dependencies
-RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
-COPY entrypoint.sh ./entrypoint.sh
-ENTRYPOINT ["sh", "-c", "./entrypoint.sh"]
+RUN pip install --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
 
 # Expose the port that FastAPI will run on
 EXPOSE 8000
-# Command to run the FastAPI app using Uvicorn
 
-CMD ["/bin/bash", "entrypoint.sh"]
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Use the entrypoint script to handle environment preparation, then start the server
+ENTRYPOINT ["./entrypoint.sh"]
 
+# Default command to run the FastAPI app
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
